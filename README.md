@@ -27,3 +27,7 @@ sudo mv /etc/resolv.conf /etc/resolv.conf.bak
 
 ### No need for the below either if you dont have it
 sudo service network-manager restart
+
+
+# Connect to the running pihole container
+docker exec -ti pihole /bin/bash
