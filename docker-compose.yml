@@ -30,7 +30,7 @@ services:
       - "4430:443/tcp"
     environment:
       TZ: 'Africa/Johannesburg'
-      WEBPASSWORD: 'xxxxxx'
+      WEBPASSWORD: 'ThisIsAPie1!'
       DNS1: 1.1.1.1
       DNS2: 1.0.0.1
     # Volumes store your data between container upgrades
@@ -40,6 +40,9 @@ services:
       - '/home/svennuc/docker/pihole/overwrite_resolv.conf:/etc/resolv.conf'
       #- '/home/svennuc/docker/pihole/volume/:/etc/pihole/'
       #- '/home/svennuc/docker/pihole/volume/dnsmasq.d/:/etc/dnsmasq.d/'
+
+    #this DNS is actually not honored. Check the github readme. Bascially we need to copy another resolv.conf into the container using a
+    #bind mount
     dns: #what the container should use to resolve internal DNS.
       - 127.0.0.1
       - 192.168.88.118 #the IP of the host on which the pihole container runs
@@ -50,8 +53,19 @@ services:
     # I wont be using DHCP, but lets just leave it in here
     cap_add:
       - NET_ADMIN
+   #networks:
+   #  default:
+   #   external: true
+   #     ipv4_address: 192.168.88.118
     restart: unless-stopped
 
 volumes:
   pihole_pihole:
   pihole_dnsmasq:
+
+# https://docs.docker.com/compose/networking/
+#networks:
+#  default:
+#    external:
+#      name: main_net
+
