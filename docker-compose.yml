@@ -1,0 +1,68 @@
+version: "3"
+# https://www.smarthomebeginner.com/run-pihole-in-docker-on-ubuntu-with-reverse-proxy/
+# http://tonylawrence.com/posts/unix/synology/running-pihole-inside-docker/
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+
+#sudo systemctl disable systemd-resolved.service
+#sudo systemctl stop systemd-resolved.service
+
+#I dont have this file
+#sudo nano /etc/NetworkManager/NetworkManager.conf
+#Add dns=default under [main]
+
+#sudo mv /etc/resolv.conf /etc/resolv.conf.bak
+
+#no need for the below either if you dont have it
+#sudo service network-manager restart
+
+
+#TO UPDATE PIHOLE
+#sudo docker-compose pull
+#sudo docker-compose up -d
+
+
+#ISSUE AND WORKAROUND
+# The -dns setting is used to tell docker what DNS servers should be used for internal resolving. But because docker uses 127.0.0.11 (yes, two 11)
+# for internal resolving, it somehow messes up 127.0.0.1. Probably a pihole bug, not sure.
+# The workaround is to bind mount a resolv.conf file. I created one as such:
+# echo -e "nameserver 127.0.0.1\nnameserver 192.168.88.118" > overwrite_resolv.conf
+# Specify the above file in your bind mount
+
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      # - "67:67/udp" #uncomment for DHCP
+      - "8090:80/tcp"
+      - "4430:443/tcp"
+    environment:
+      TZ: 'Africa/Johannesburg'
+      WEBPASSWORD: 'ThisIsAPie1!'
+      DNS1: 1.1.1.1
+      DNS2: 1.0.0.1
+    # Volumes store your data between container upgrades
+    volumes:
+      - pihole_pihole:/etc/pihole/
+      - pihole_dnsmasq:/etc/dnsmasq.d/
+      - '/home/svennuc/docker/pihole/overwrite_resolv.conf:/etc/resolv.conf'
+      #- '/home/svennuc/docker/pihole/volume/:/etc/pihole/'
+      #- '/home/svennuc/docker/pihole/volume/dnsmasq.d/:/etc/dnsmasq.d/'
+    dns: #what the container should use to resolve internal DNS.
+      - 127.0.0.1
+      - 192.168.88.118 #the IP of the host on which the pihole container runs
+      #- 1.1.1.1
+      #- 1.0.0.1
+    # Recommended but not required (DHCP needs NET_ADMIN)
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    # I wont be using DHCP, but lets just leave it in here
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+
+volumes:
+  pihole_pihole:
+  pihole_dnsmasq:
