@@ -3,27 +3,12 @@ version: "3"
 # http://tonylawrence.com/posts/unix/synology/running-pihole-inside-docker/
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
 
-#Sort out the network stuff first
-#Pull the docker container docker pull pihole/pihole:latest
-#sudo systemctl disable systemd-resolved.service
-#sudo systemctl stop systemd-resolved.service
-
-#I dont have this file
-#sudo nano /etc/NetworkManager/NetworkManager.conf
-#Add dns=default under [main]
-
-#sudo mv /etc/resolv.conf /etc/resolv.conf.bak
-
-#no need for the below either if you dont have it
-#sudo service network-manager restart
-
-
 #TO UPDATE PIHOLE
 #sudo docker-compose pull
 #sudo docker-compose up -d
 
 #CONNECT TO THE CONTAINER
-#docker exec -ti pihole /bin/bash
+#sudo docker exec -ti pihole /bin/bash
 
 #ISSUE AND WORKAROUND
 # The -dns setting is used to tell docker what DNS servers should be used for internal resolving. But because docker uses 127.0.0.11 (yes, two 11)
