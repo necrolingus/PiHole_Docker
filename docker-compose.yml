@@ -41,7 +41,7 @@ services:
       - "4430:443/tcp"
     environment:
       TZ: 'Africa/Johannesburg'
-      WEBPASSWORD: 'ThisIsAPie1!'
+      WEBPASSWORD: 'xxxxxx'
       DNS1: 1.1.1.1
       DNS2: 1.0.0.1
     # Volumes store your data between container upgrades
